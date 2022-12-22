@@ -54,6 +54,7 @@
         "mcasName": "[concat('mcas', uniqueString(resourceGroup().id))]",
         "aadipName": "[concat('aadip', uniqueString(resourceGroup().id))]",
         "tiName": "[concat('ti', uniqueString(resourceGroup().id))]"
+        "AADNAME": "[concat('AAD', uniqueString(resourceGroup().id))]"
     },
     "resources": [
         {
@@ -78,6 +79,30 @@
                 }
             }
         },
+        
+        {
+            "condition": "[contains(parameters('dataConnectorsKind'), 'AAD')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+            "apiVersion": "2020-01-01",
+            "location": "[parameters('location')]",
+            "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',variables('AAD'))]",
+            "kind": "AzureActiveDirectory",
+            "properties": {
+                "tenantId": "[parameters('tenantId')]",
+                "dataTypes": {
+                    "exchange": {
+                        "state": "enabled"
+                    },
+                    "sharePoint": {
+                        "state": "enabled"
+                    },
+                    "teams": {
+                        "state": "enabled"
+                    }
+                }
+            }
+        },
+        
         {
             "condition": "[contains(parameters('dataConnectorsKind'), 'MicrosoftDefenderAdvancedThreatProtection')]",
             "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
